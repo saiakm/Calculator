@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Calculator{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form method="post">
+  <label for="query">Query</label>
+  <input name="query" id="query" required>
+  <input type="submit" value="Submit">
+</form>
+{% if error %}
+<p> {{ error }} </p>
+{% endif %}
+
+<!--show current calculation to the user-->
+{% if value %}
+  <p> Current Calculation: {{ value }} </p>
+{% endif %}
+<br>
+
+<!--show last 10 calculations to all the users-->
+{% if queries %}
+<h1>Last 10 Calculations by all users combined</h1>
+{% for row in queries%}
+<p>{{row['query']}}</p>
+{% endfor %}
+
+{% endif %}
+
+
+
+
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+  var socket;
+  $(document).ready(function () {
+    // The http vs. https is important. Use http for localhost!
+    socket = io.connect('http://127.0.0.1:5000');
+    socket.on('message_from_server', function (data) {
+      // do something with data...
+      console.log('Came');
+      window.location.href = 'http://127.0.0.1:5000/calculate';
+    });
+  });
+
+</script>
+{% endblock %}
